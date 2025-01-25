@@ -60,11 +60,14 @@ router.get("/:id", authenticateToken, (req, res) => {
 
 
 router.post("/", authenticateToken, (req, res) => {
-    const { title, context, image, price, genre } = req.body;
+
+    const { title, context, image, price, genre, author } = req.body;
+
+    const authorId = parseInt(author, 10); 
 
     // Step 1: Insert book into `books` table
-    const insertBookQuery = "INSERT INTO books (`title`, `context`, `image`, `price`) VALUES (?)";
-    const bookValues = [title, context, image, price];
+    const insertBookQuery = "INSERT INTO books (`title`, `context`, `image`, `price`, `author_id`) VALUES (?)";
+    const bookValues = [title, context, image, price, authorId];
 
     db.query(insertBookQuery, [bookValues], (err, bookResult) => {
         if (err) return res.json(err);
@@ -93,6 +96,7 @@ router.post("/", authenticateToken, (req, res) => {
 
 router.delete("/:id", authenticateToken, (req, res)=> {
     const bookId = req.params.id;
+    console.log(bookId);
     const q = "DELETE FROM books WHERE book_id=(?)"
 
     db.query(q, [bookId], (err, data) => {
